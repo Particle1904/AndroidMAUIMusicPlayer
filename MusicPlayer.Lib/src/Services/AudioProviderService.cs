@@ -2,6 +2,7 @@
 using MusicPlayer.Lib.src.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,14 @@ namespace MusicPlayer.Lib.src.Services
     {
         private readonly LibVLC _libVlc;
         private readonly MediaPlayer _player;
+        
+        private Media _currentMedia;
+        private float _position = 0.0f;
+
+        public bool IsPlaying 
+        { 
+            get => _player.IsPlaying;
+        }
 
         public AudioProviderService()
         {
@@ -24,17 +33,39 @@ namespace MusicPlayer.Lib.src.Services
         {
             await Task.Run(() =>
             {
-                if (!_player.IsPlaying)
+                if (_player.IsPlaying)
                 {
-                    Media audioFile = new Media(_libVlc, filePath);
-                    _player.Play(audioFile);
+                    _player.Stop();
+                }
+
+                _currentMedia = new Media(_libVlc, filePath);
+                _position = 0.0f;
+                _player.Play(_currentMedia);
+            });
+        }
+
+        public async Task PausePlayback()
+        {
+            await Task.Run(() =>
+            {
+                if (_player.IsPlaying)
+                {
+                    _position = _player.Position;
+                    _player.Pause();
                 }
             });
         }
 
-        public Task StopAudioFile()
+        public async Task ContinuePlayback()
         {
-            throw new NotImplementedException();
+            await Task.Run(() =>
+            {
+                if (!_player.IsPlaying)
+                {
+                    _player.Position = _position;
+                    _player.Play();
+                }
+            });
         }
 
         public void Dispose()

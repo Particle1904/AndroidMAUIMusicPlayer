@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Android.Content;
 using MusicPlayer.Lib.src.Models;
+using MusicPlayer.Client.src.Controls;
+using System.Collections.ObjectModel;
 
 namespace MusicPlayer.Client.src.ViewModels
 {
@@ -18,9 +20,11 @@ namespace MusicPlayer.Client.src.ViewModels
         private readonly IFileManipulatorService _fileManipulator;
         private readonly IAudioProviderService _audioProvider;
         private readonly Context _context;
-        
+
+        private View _songsPage;
+
         [ObservableProperty]
-        private HashSet<string> _filesInSDCard;
+        private View _currentPage;
 
         public MainPageViewModel(IFileManipulatorService fileManipulator, IAudioProviderService audioProvider, Context context)
         {
@@ -28,7 +32,9 @@ namespace MusicPlayer.Client.src.ViewModels
             _audioProvider = audioProvider;
             _context = context;
 
-            _filesInSDCard = new HashSet<string>();
+            InitializeViews();
+            
+            _currentPage = _songsPage;
         }
 
         [RelayCommand]
@@ -37,9 +43,28 @@ namespace MusicPlayer.Client.src.ViewModels
             if (_fileManipulator != null)
             {
                 List<MusicFile> musicFiles = await _fileManipulator.GetSoundFilesAsync(_context);
-
                 List<MusicFile> sortedList = musicFiles.OrderBy(file => file.Title).ToList();
+                (_songsPage.BindingContext as SongsViewModel).FoundSongs = new ObservableCollection<MusicFile>(sortedList);
             }
+        }
+
+        [RelayCommand]
+        public async Task PlayButton()
+        {
+            if(_audioProvider.IsPlaying) 
+            {
+                await _audioProvider.PausePlayback();
+            }
+            else
+            {
+                await _audioProvider.ContinuePlayback();
+            }
+        }
+
+        private void InitializeViews()
+        {
+            _songsPage = new SongsPage();
+            _songsPage.BindingContext = new SongsViewModel(_fileManipulator, _audioProvider);
         }
     }
 }

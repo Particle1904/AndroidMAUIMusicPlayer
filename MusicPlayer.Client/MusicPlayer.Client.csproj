@@ -67,12 +67,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="src\ViewModels\" />
 	  <Folder Include="src\Views\" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\MusicPlayer.Lib\MusicPlayer.Lib.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="src\Controls\SongsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 
 </Project>

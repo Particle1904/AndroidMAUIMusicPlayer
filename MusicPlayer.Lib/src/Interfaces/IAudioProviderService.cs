@@ -8,7 +8,10 @@ namespace MusicPlayer.Lib.src.Interfaces
 {
     public interface IAudioProviderService
     {
+        public bool IsPlaying { get; }
+
         public Task PlayAudioFile(string filePath);
-        public Task StopAudioFile();
+        public Task PausePlayback();
+        public Task ContinuePlayback();
     }
 }

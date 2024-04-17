@@ -73,7 +73,7 @@ namespace MusicPlayer.Lib.src.Services
                 Android.Provider.MediaStore.IMediaColumns.Artist,
                 Android.Provider.MediaStore.IMediaColumns.Album,
                 Android.Provider.MediaStore.IMediaColumns.Genre,
-                Android.Provider.MediaStore.IMediaColumns.Title,
+                Android.Provider.MediaStore.IMediaColumns.Title
             };
 
             using (ICursor cursor = context.ContentResolver.Query(MediaStore.Audio.Media.ExternalContentUri, projection,
@@ -89,17 +89,22 @@ namespace MusicPlayer.Lib.src.Services
                             continue;
                         }
 
+                        string album = cursor.GetString(cursor.GetColumnIndex(projection[4]));
+                        if (album.Equals("WhatsApp Audio", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            continue;
+                        }
+
                         string filePath = cursor.GetString(cursor.GetColumnIndex(projection[0]));
                         if (_searchPattern.Split(',').Any(extension => filePath.EndsWith(extension, 
                                 StringComparison.OrdinalIgnoreCase)))
                         {
                             string name = cursor.GetString(cursor.GetColumnIndex(projection[2]));
                             string artist = cursor.GetString(cursor.GetColumnIndex(projection[3]));
-                            string album = cursor.GetString(cursor.GetColumnIndex(projection[4]));
                             string genre = cursor.GetString(cursor.GetColumnIndex(projection[5]));
                             string title = cursor.GetString(cursor.GetColumnIndex(projection[6]));
 
-                            MusicFile musicFile = new MusicFile(name, title, artist, album, genre, filePath, duration);
+                            MusicFile musicFile = new MusicFile(name, GetFormattedFileName(title), artist, album, genre, filePath, duration);
                             soundFilesInSDCard.Add(musicFile);
                         }
                     }
