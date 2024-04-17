@@ -1,4 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
+using MusicPlayer.Lib.src.Services;
+using MusicPlayer.Lib.src.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using MusicPlayer.Client.src.ViewModels;
 
 namespace MusicPlayer.Client
 {
@@ -18,7 +22,8 @@ namespace MusicPlayer.Client
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
-
+            builder.Services.AddSingleton<IFileManipulatorService, FileManipulatorService>();
+            builder.Services.AddSingleton<IAudioProviderService, AudioProviderService>();
             return builder.Build();
         }
     }
