@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Android.Content;
+using MusicPlayer.Lib.src.Models;
 
 namespace MusicPlayer.Client.src.ViewModels
 {
@@ -18,7 +19,6 @@ namespace MusicPlayer.Client.src.ViewModels
         private readonly IAudioProviderService _audioProvider;
         private readonly Context _context;
         
-
         [ObservableProperty]
         private HashSet<string> _filesInSDCard;
 
@@ -36,8 +36,9 @@ namespace MusicPlayer.Client.src.ViewModels
         {
             if (_fileManipulator != null)
             {
-                FilesInSDCard = await _fileManipulator.GetSoundFilesAsync(_context);
-                Trace.WriteLine($"FOUND {FilesInSDCard.Count} FILES.");
+                List<MusicFile> musicFiles = await _fileManipulator.GetSoundFilesAsync(_context);
+
+                List<MusicFile> sortedList = musicFiles.OrderBy(file => file.Title).ToList();
             }
         }
     }

@@ -4,7 +4,10 @@ using Android.Database;
 using Android.Provider;
 #endif
 using MusicPlayer.Lib.src.Interfaces;
+using MusicPlayer.Lib.src.Models;
 using System.Diagnostics;
+using System.Security;
+using System.Text.RegularExpressions;
 
 namespace MusicPlayer.Lib.src.Services
 {
@@ -19,13 +22,20 @@ namespace MusicPlayer.Lib.src.Services
         /// </summary>
         /// <param name="context">The context used to access content resolver.</param>
         /// <returns>A task representing the asynchronous operation. The task result contains a HashSet containing paths to the sound files found.</returns>
-        public async Task<HashSet<string>> GetSoundFilesAsync(Context context)
+        public async Task<List<MusicFile>> GetSoundFilesAsync(Context context)
         {
             await CheckAndRequestPermission<Permissions.StorageRead>();
 
-            HashSet<string> filesInSDCard = await Task.Run(() => GetSoundFilesInMediaStorage(context));
+            List<MusicFile> filesInSDCard = await Task.Run(() => GetSoundFilesInMediaStorage(context));
 
             return filesInSDCard;
+        }
+
+        public string GetFormattedFileName(string filePath)
+        {
+            string fileName = Path.GetFileNameWithoutExtension(filePath);
+            string formattedFilename = Regex.Replace(fileName, @"(?<!-\s)\d|[\[\]\-.]", "").Trim();
+            return formattedFilename;
         }
 
         /// <summary>
@@ -50,15 +60,20 @@ namespace MusicPlayer.Lib.src.Services
         /// Retrieves sound files from the SD card.
         /// </summary>
         /// <param name="context">The context used to access content resolver.</param>
-        /// <returns>A HashSet containing paths to the sound files found.</returns>
-        private HashSet<string> GetSoundFilesInMediaStorage(Context context)
+        /// <returns>A List containing MusicFile objects with data about the sound files.</returns>
+        private List<MusicFile> GetSoundFilesInMediaStorage(Context context)
         {
-            HashSet<string> soundFilesInSDCard = new HashSet<string>();
+            List<MusicFile> soundFilesInSDCard = new List<MusicFile>();
 
             string[] projection =
             {
                 Android.Provider.MediaStore.IMediaColumns.Data,
-                Android.Provider.MediaStore.IMediaColumns.Duration
+                Android.Provider.MediaStore.IMediaColumns.Duration,
+                Android.Provider.MediaStore.IMediaColumns.DisplayName,
+                Android.Provider.MediaStore.IMediaColumns.Artist,
+                Android.Provider.MediaStore.IMediaColumns.Album,
+                Android.Provider.MediaStore.IMediaColumns.Genre,
+                Android.Provider.MediaStore.IMediaColumns.Title,
             };
 
             using (ICursor cursor = context.ContentResolver.Query(MediaStore.Audio.Media.ExternalContentUri, projection,
@@ -68,7 +83,8 @@ namespace MusicPlayer.Lib.src.Services
                 {
                     do
                     {
-                        if (cursor.GetLong(cursor.GetColumnIndex(projection[1])) < TimeSpan.FromSeconds(_minFileThresholdSeconds).TotalMilliseconds)
+                        long duration = cursor.GetLong(cursor.GetColumnIndex(projection[1]));
+                        if (duration < TimeSpan.FromSeconds(_minFileThresholdSeconds).TotalMilliseconds)
                         {
                             continue;
                         }
@@ -77,7 +93,14 @@ namespace MusicPlayer.Lib.src.Services
                         if (_searchPattern.Split(',').Any(extension => filePath.EndsWith(extension, 
                                 StringComparison.OrdinalIgnoreCase)))
                         {
-                            soundFilesInSDCard.Add(filePath);
+                            string name = cursor.GetString(cursor.GetColumnIndex(projection[2]));
+                            string artist = cursor.GetString(cursor.GetColumnIndex(projection[3]));
+                            string album = cursor.GetString(cursor.GetColumnIndex(projection[4]));
+                            string genre = cursor.GetString(cursor.GetColumnIndex(projection[5]));
+                            string title = cursor.GetString(cursor.GetColumnIndex(projection[6]));
+
+                            MusicFile musicFile = new MusicFile(name, title, artist, album, genre, filePath, duration);
+                            soundFilesInSDCard.Add(musicFile);
                         }
                     }
                     while (cursor.MoveToNext());

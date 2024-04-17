@@ -1,5 +1,7 @@
 ﻿#if ANDROID
 using Android.Content;
+using MusicPlayer.Lib.src.Models;
+
 #endif
 using System;
 using System.Collections.Generic;
@@ -12,7 +14,8 @@ namespace MusicPlayer.Lib.src.Interfaces
     public interface IFileManipulatorService
     {
 #if ANDROID
-        public Task<HashSet<string>> GetSoundFilesAsync(Context contenxt);
+        public string GetFormattedFileName(string filePath);
+        public Task<List<MusicFile>> GetSoundFilesAsync(Context contenxt);
 #endif
     }
 }
