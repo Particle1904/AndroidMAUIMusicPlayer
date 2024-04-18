@@ -5,45 +5,66 @@
              xmlns:mfc="clr-namespace:MusicPlayer.Client.src.Controls">
     <Grid RowDefinitions="auto, auto, *">
         <Label Grid.Row="0"
-               Text="{Binding TotalSongs}"/>
+               Text="{Binding TotalSongs}"
+               FontSize="18"
+               Padding="8"
+               HorizontalTextAlignment="Center"
+               VerticalTextAlignment="Center"/>
         <Grid Grid.Row="1"
-              ColumnDefinitions="1*, 1*">
-            <Button Grid.Column="0" 
-                    Text="Suffle"/>
-            <Button Grid.Column="1" 
-                    Text="Play"/>
+              ColumnDefinitions="0.3*, 5*, 0.3*, 5*, 0.3*">
+            <Button Grid.Column="1"
+                    Text="Suffle"
+                    Margin="10"
+                    BackgroundColor="DarkCyan"
+                    TextColor="White"
+                    Command="{Binding ShuffleCommand}"/>
+            <Button Grid.Column="3" 
+                    Text="Play"
+                    Margin="10"
+                    BackgroundColor="DarkCyan"
+                    TextColor="White"
+                    Command="{Binding PlayFirstCommand}"/>
         </Grid>
         <ListView Grid.Row="2"
+                  x:Name="SongList"
                   ItemsSource="{Binding FoundSongs}"
                   SelectionMode="Single"
-                  ItemSelected="ItemSelected">
+                  ItemSelected="ItemSelected"
+                  SeparatorVisibility="None"
+                  RowHeight="60">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <Grid ColumnDefinitions="1*, 8*, 1*">
+                        <Grid ColumnDefinitions="1*, 8*, 1*"
+                              VerticalOptions="CenterAndExpand" 
+                              Padding="10">
                             <Image Grid.Column="0"
-                                   MaximumWidthRequest="25"
-                                   MaximumHeightRequest="25"
-                                   Source="{Binding AlbumArt}"/>
-                            <VerticalStackLayout Grid.Column="1">
-                                <ScrollView HorizontalScrollBarVisibility="Never">
-                                    <Label Text="{Binding Title}"
+                                   Source="{Binding AlbumArt}"
+                                   VerticalOptions="CenterAndExpand"/>
+                            <VerticalStackLayout Grid.Column="1"
+                                                 VerticalOptions="CenterAndExpand"
+                                                 HorizontalOptions="StartAndExpand">
+                                <Label Text="{Binding Title}"
                                            TextColor="White"
-                                           FontSize="13"
+                                           FontSize="16"
                                            LineBreakMode="TailTruncation"
                                            VerticalOptions="Start"
-                                           HorizontalOptions="StartAndExpand"/>
-                                </ScrollView>
-                                <ScrollView HorizontalScrollBarVisibility="Never">
-                                    <Label Text="{Binding Album}"
-                                           TextColor="White"
+                                           HorizontalOptions="StartAndExpand"
+                                           InputTransparent="True"/>
+                                <Label Text="{Binding Album}"
+                                           TextColor="LightGray"
                                            FontSize="10"
                                            LineBreakMode="TailTruncation"
                                            VerticalOptions="Start"
-                                           HorizontalOptions="StartAndExpand"/>
-                                </ScrollView>
+                                           HorizontalOptions="StartAndExpand"
+                                           InputTransparent="True"/>
                             </VerticalStackLayout>
-                            <ImageButton Grid.Column="2"/>
+                            <ImageButton Grid.Column="2"
+                                         Source="more_vertical.png"
+                                         VerticalOptions="CenterAndExpand"
+                                         HeightRequest="30"
+                                         Padding="0"
+                                         Margin="0"/>
                         </Grid>
                     </ViewCell>
                 </DataTemplate>

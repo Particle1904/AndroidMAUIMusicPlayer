@@ -20,17 +20,29 @@ namespace MusicPlayer.Client.src.ViewModels
         private readonly IFileManipulatorService _fileManipulator;
         private readonly IAudioProviderService _audioProvider;
         private readonly Context _context;
+        private readonly Random _random;
 
         private View _songsPage;
 
         [ObservableProperty]
         private View _currentPage;
 
+        [ObservableProperty]
+        private string _currentPlayingSong;
+        [ObservableProperty]
+        private string _currentPlayingAuthor;
+
         public MainPageViewModel(IFileManipulatorService fileManipulator, IAudioProviderService audioProvider, Context context)
         {
             _fileManipulator = fileManipulator;
             _audioProvider = audioProvider;
+            _audioProvider.SongChanged += (sender, e) => {
+                CurrentPlayingSong = e.Title;
+                CurrentPlayingAuthor = e.Artist;
+            };
+
             _context = context;
+            _random = new Random();
 
             InitializeViews();
             
@@ -64,7 +76,7 @@ namespace MusicPlayer.Client.src.ViewModels
         private void InitializeViews()
         {
             _songsPage = new SongsPage();
-            _songsPage.BindingContext = new SongsViewModel(_fileManipulator, _audioProvider);
+            _songsPage.BindingContext = new SongsViewModel(_fileManipulator, _audioProvider, _random);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using LibVLCSharp.Shared;
 using MusicPlayer.Lib.src.Interfaces;
+using MusicPlayer.Lib.src.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,12 +11,17 @@ using System.Threading.Tasks;
 namespace MusicPlayer.Lib.src.Services
 {
     public class AudioProviderService : IAudioProviderService, IDisposable
-    {
+    {   
         private readonly LibVLC _libVlc;
         private readonly MediaPlayer _player;
         
         private Media _currentMedia;
         private float _position = 0.0f;
+
+        public event EventHandler<MusicFile> SongChanged;
+        public event EventHandler SongEnded;
+
+        public bool IsRandomized { get; set; } = false;
 
         public bool IsPlaying 
         { 
@@ -27,9 +33,11 @@ namespace MusicPlayer.Lib.src.Services
             Core.Initialize();
             _libVlc = new LibVLC();
             _player = new MediaPlayer(_libVlc);
+
+            _player.EndReached += (sender, e) => SongEnded.Invoke(this, EventArgs.Empty);
         }
 
-        public async Task PlayAudioFile(string filePath)
+        public async Task PlayAudioFile(MusicFile musicFile)
         {
             await Task.Run(() =>
             {
@@ -38,7 +46,8 @@ namespace MusicPlayer.Lib.src.Services
                     _player.Stop();
                 }
 
-                _currentMedia = new Media(_libVlc, filePath);
+                _currentMedia = new Media(_libVlc, musicFile.FilePath);
+                SongChanged.Invoke(this, musicFile);
                 _position = 0.0f;
                 _player.Play(_currentMedia);
             });

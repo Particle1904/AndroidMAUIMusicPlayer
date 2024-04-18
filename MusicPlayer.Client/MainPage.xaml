@@ -5,18 +5,16 @@
     <Grid RowDefinitions="Auto, Auto, *, Auto"
           RowSpacing="10">
         <Grid Grid.Row="0" 
-              ColumnDefinitions="Auto, *, Auto, Auto"
+              ColumnDefinitions="Auto, *, Auto"
               ColumnSpacing="10">
-            <Button Grid.Column="0" 
-                    BackgroundColor="Green"/>
+            <ImageButton Grid.Column="0" 
+                         Source="options.png"/>
             <Label Grid.Column="1" 
                    Text="Music Player"
                    VerticalTextAlignment="Center"
                    FontSize="22"/>
-            <Button Grid.Column="2" 
-                    BackgroundColor="Green"/>
-            <Button Grid.Column="3" 
-                    BackgroundColor="Green"/>
+            <ImageButton Grid.Column="2" 
+                         Source="search.png"/>
         </Grid>
 
         <ScrollView Grid.Row="1" 
@@ -68,16 +66,14 @@
             <Button Grid.Column="0" 
                     BackgroundColor="Green"/>
             <VerticalStackLayout Grid.Column="1">
-                <Label Text="Scrolling Song Name" 
+                <Label Text="{Binding CurrentPlayingSong}" 
                        FontSize="14"/>
-                <Label Text="Author Text" 
-                       FontSize="14"/>
+                <Label Text="{Binding CurrentPlayingAuthor}" 
+                       FontSize="10"/>
             </VerticalStackLayout>
-            <Button Grid.Column="2" 
-                    BackgroundColor="Green"
-                    Command="{Binding PlayButtonCommand}"/>
-            <Button Grid.Column="3" 
-                    BackgroundColor="Green"/>
+            <ImageButton Grid.Column="2"
+                         Command="{Binding PlayButtonCommand}"
+                         Source="video_play_pause.png"/>
         </Grid>
     </Grid>
 </ContentPage>

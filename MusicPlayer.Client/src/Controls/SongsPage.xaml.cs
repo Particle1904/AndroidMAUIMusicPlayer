@@ -13,6 +13,9 @@ public partial class SongsPage : ContentView
 
     private void ItemSelected(object sender, SelectedItemChangedEventArgs e)
     {
-		(BindingContext as SongsViewModel).PlaySoundAsyncCommand.Execute((e.SelectedItem as MusicFile).FilePath);
+        SongsViewModel viewModel = (BindingContext as SongsViewModel);
+        viewModel.PlaySoundAsyncCommand.Execute(e.SelectedItem);
+        viewModel.CurrentlyPlayingIndex = e.SelectedItemIndex;
+		SongList.SelectedItem = null;
     }
 }

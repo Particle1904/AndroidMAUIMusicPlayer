@@ -59,6 +59,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\more_vertical.png" />
+	  <None Remove="Resources\Images\options.png" />
+	  <None Remove="Resources\Images\search.png" />
+	  <None Remove="Resources\Images\shuffle.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.20" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.20" />

@@ -99,10 +99,13 @@ namespace MusicPlayer.Lib.src.Services
                         if (_searchPattern.Split(',').Any(extension => filePath.EndsWith(extension, 
                                 StringComparison.OrdinalIgnoreCase)))
                         {
-                            string name = cursor.GetString(cursor.GetColumnIndex(projection[2]));
+                            string name = cursor.GetString(cursor.GetColumnIndex(projection[2])); ;
                             string artist = cursor.GetString(cursor.GetColumnIndex(projection[3]));
                             string genre = cursor.GetString(cursor.GetColumnIndex(projection[5]));
-                            string title = cursor.GetString(cursor.GetColumnIndex(projection[6]));
+                            // Format title to upper case first letter of title.
+                            string rawTitle = cursor.GetString(cursor.GetColumnIndex(projection[6]));
+                            string formattedTitle = $"{char.ToUpper(rawTitle[0])}{rawTitle[1..]}";
+                            string title = formattedTitle.Replace("   ", " ").Replace("  ", " ");
 
                             MusicFile musicFile = new MusicFile(name, GetFormattedFileName(title), artist, album, genre, filePath, duration);
                             soundFilesInSDCard.Add(musicFile);

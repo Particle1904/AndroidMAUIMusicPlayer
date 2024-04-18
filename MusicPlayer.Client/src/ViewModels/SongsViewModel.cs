@@ -16,6 +16,7 @@ namespace MusicPlayer.Client.src.ViewModels
     {
         private readonly IFileManipulatorService _fileManipulator;
         private readonly IAudioProviderService _audioProvider;
+        private readonly Random _random;
 
         [ObservableProperty]
         private string _totalSongs;
@@ -23,12 +24,18 @@ namespace MusicPlayer.Client.src.ViewModels
         [ObservableProperty]
         private ObservableCollection<MusicFile> _foundSongs;
 
-        public SongsViewModel(IFileManipulatorService fileManipulator, IAudioProviderService audioProvider)
+        [ObservableProperty]
+        private int _currentlyPlayingIndex;
+
+        public SongsViewModel(IFileManipulatorService fileManipulator, IAudioProviderService audioProvider, Random random)
         {
             _fileManipulator = fileManipulator;
             _audioProvider = audioProvider;
+            _audioProvider.SongEnded += (sender, e) => PlayNext();
 
             TotalSongs = "No songs found!";
+
+            _random = random;
         }
 
         partial void OnFoundSongsChanged(ObservableCollection<MusicFile> value)
@@ -37,9 +44,59 @@ namespace MusicPlayer.Client.src.ViewModels
         }
 
         [RelayCommand]
-        private void PlaySoundAsync(string filePath)
+        private void Shuffle()
         {
-            _audioProvider.PlayAudioFile(filePath);
+            if (FoundSongs == null)
+            {
+                return;
+            }
+
+            if (FoundSongs.Count > 0)
+            {
+                _audioProvider.IsRandomized = true;
+                CurrentlyPlayingIndex = _random.Next(FoundSongs.Count);
+                _audioProvider.PlayAudioFile(FoundSongs.ElementAt(CurrentlyPlayingIndex));
+            }
+        }
+
+        [RelayCommand]
+        private void PlayFirst()
+        {
+            if (FoundSongs == null)
+            {
+                return;
+            }
+
+            if (FoundSongs.Count > 0) 
+            {
+                _audioProvider.IsRandomized = false;
+                CurrentlyPlayingIndex = 0;
+                _audioProvider.PlayAudioFile(FoundSongs.FirstOrDefault());
+            }
+        }
+
+        [RelayCommand]
+        private void PlaySoundAsync(MusicFile musicFile)
+        {
+            _audioProvider.PlayAudioFile(musicFile);
+        }
+
+        private void PlayNext()
+        {
+            if (_audioProvider.IsRandomized)
+            {
+                CurrentlyPlayingIndex = _random.Next(FoundSongs.Count);
+                _audioProvider.PlayAudioFile(FoundSongs.ElementAt(CurrentlyPlayingIndex));
+            }
+            else
+            {
+                CurrentlyPlayingIndex++;
+                if (CurrentlyPlayingIndex > FoundSongs.Count)
+                {
+                    CurrentlyPlayingIndex = 0;
+                }
+                _audioProvider.PlayAudioFile(FoundSongs.ElementAt(CurrentlyPlayingIndex));
+            }
         }
     }
 }
