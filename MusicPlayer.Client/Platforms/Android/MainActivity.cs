@@ -1,6 +1,7 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.Content.PM;
+using Android.Content.Res;
 using Android.OS;
 
 namespace MusicPlayer.Client
@@ -18,8 +19,20 @@ namespace MusicPlayer.Client
         public override void OnCreate(Bundle savedInstanceState, PersistableBundle persistentState)
         {
             base.OnCreate(savedInstanceState, persistentState);
+        }
 
-            RequestedOrientation = Android.Content.PM.ScreenOrientation.Portrait;
+        public override void OnConfigurationChanged(Configuration newConfig)
+        {
+            base.OnConfigurationChanged(newConfig);
+
+            if (newConfig.Orientation == Orientation.Landscape)
+            {
+                RequestedOrientation = ScreenOrientation.Portrait;
+            }
+            else if(newConfig.Orientation == Orientation.Portrait)
+            {
+                RequestedOrientation = ScreenOrientation.Portrait;
+            }
         }
     }
 }
