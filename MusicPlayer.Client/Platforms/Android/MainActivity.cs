@@ -16,11 +16,6 @@ namespace MusicPlayer.Client
               ConfigChanges.Density)]
     public class MainActivity : MauiAppCompatActivity
     {
-        public override void OnCreate(Bundle savedInstanceState, PersistableBundle persistentState)
-        {
-            base.OnCreate(savedInstanceState, persistentState);
-        }
-
         public override void OnConfigurationChanged(Configuration newConfig)
         {
             base.OnConfigurationChanged(newConfig);

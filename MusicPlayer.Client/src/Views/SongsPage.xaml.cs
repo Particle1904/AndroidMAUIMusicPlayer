@@ -2,7 +2,7 @@ using MusicPlayer.Client.src.ViewModels;
 using MusicPlayer.Lib.src.Models;
 using System.Diagnostics;
 
-namespace MusicPlayer.Client.src.Controls;
+namespace MusicPlayer.Client.src.Views;
 
 public partial class SongsPage : ContentView
 {

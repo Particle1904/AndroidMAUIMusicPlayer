@@ -1,12 +1,15 @@
 ﻿#if ANDROID
 using Android.Content;
 using Android.Database;
+using Android.Graphics;
 using Android.Provider;
+using Javax.Xml.Transform.Stream;
 #endif
 using MusicPlayer.Lib.src.Interfaces;
 using MusicPlayer.Lib.src.Models;
 using System.Diagnostics;
 using System.Security;
+using Microsoft.Maui.Graphics.Platform;
 using System.Text.RegularExpressions;
 
 namespace MusicPlayer.Lib.src.Services
@@ -33,9 +36,27 @@ namespace MusicPlayer.Lib.src.Services
 
         public string GetFormattedFileName(string filePath)
         {
-            string fileName = Path.GetFileNameWithoutExtension(filePath);
+            string fileName = System.IO.Path.GetFileNameWithoutExtension(filePath);
             string formattedFilename = Regex.Replace(fileName, @"(?<!-\s)\d|[\[\]\-.]", "").Trim();
             return formattedFilename;
+        }
+
+        public ImageSource ConvertBitmapToImageSource(Bitmap bitmap)
+        {
+            if (bitmap == null)
+            {
+                return null;
+            }
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                bitmap.Compress(Bitmap.CompressFormat.Png, 100, stream);
+                stream.Seek(0, SeekOrigin.Begin);
+
+                MemoryStream copyStream = new MemoryStream(stream.ToArray());
+
+                return ImageSource.FromStream(() => copyStream);
+            }
         }
 
         /// <summary>
@@ -73,7 +94,8 @@ namespace MusicPlayer.Lib.src.Services
                 Android.Provider.MediaStore.IMediaColumns.Artist,
                 Android.Provider.MediaStore.IMediaColumns.Album,
                 Android.Provider.MediaStore.IMediaColumns.Genre,
-                Android.Provider.MediaStore.IMediaColumns.Title
+                Android.Provider.MediaStore.IMediaColumns.Title,
+                Android.Provider.MediaStore.Audio.IAlbumColumns.AlbumId,
             };
 
             using (ICursor cursor = context.ContentResolver.Query(MediaStore.Audio.Media.ExternalContentUri, projection,
@@ -105,9 +127,28 @@ namespace MusicPlayer.Lib.src.Services
                             // Format title to upper case first letter of title.
                             string rawTitle = cursor.GetString(cursor.GetColumnIndex(projection[6]));
                             string formattedTitle = $"{char.ToUpper(rawTitle[0])}{rawTitle[1..]}";
-                            string title = formattedTitle.Replace("   ", " ").Replace("  ", " ");
+                            string title = GetFormattedFileName(formattedTitle).Replace("   ", " ").Replace("  ", " ");
 
-                            MusicFile musicFile = new MusicFile(name, GetFormattedFileName(title), artist, album, genre, filePath, duration);
+                            ImageSource albumArtImageSource = null;
+                            try
+                            {
+                                long albumArtId = cursor.GetLong(cursor.GetColumnIndex(projection[7]));
+                                if (albumArtId != 0)
+                                {
+                                    Android.Net.Uri albumArtUri = ContentUris.WithAppendedId(
+                                        Android.Net.Uri.Parse("content://media/external/audio/albumart"),
+                                        albumArtId);
+                                    Bitmap albumArt = MediaStore.Images.Media.GetBitmap(context.ContentResolver, albumArtUri);
+                                    albumArtImageSource = ConvertBitmapToImageSource(albumArt);
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                // Don't do anything, the music file simply doesn't have AlbumArt
+                            }
+
+                            MusicFile musicFile = new MusicFile(name, title, artist, album, genre, filePath, duration,
+                                albumArtImageSource);
                             soundFilesInSDCard.Add(musicFile);
                         }
                     }

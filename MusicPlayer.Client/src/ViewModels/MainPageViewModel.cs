@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Android.Content;
 using MusicPlayer.Lib.src.Models;
-using MusicPlayer.Client.src.Controls;
+using MusicPlayer.Client.src.Views;
 using System.Collections.ObjectModel;
 
 namespace MusicPlayer.Client.src.ViewModels
@@ -28,17 +28,16 @@ namespace MusicPlayer.Client.src.ViewModels
         private View _currentPage;
 
         [ObservableProperty]
-        private string _currentPlayingSong;
+        private MusicFile _currentPlayingMusic;
         [ObservableProperty]
-        private string _currentPlayingAuthor;
+        private ImageSource _currentPlayingAlbumArt;
 
         public MainPageViewModel(IFileManipulatorService fileManipulator, IAudioProviderService audioProvider, Context context)
         {
             _fileManipulator = fileManipulator;
             _audioProvider = audioProvider;
             _audioProvider.SongChanged += (sender, e) => {
-                CurrentPlayingSong = e.Title;
-                CurrentPlayingAuthor = e.Artist;
+                CurrentPlayingMusic = e;
             };
 
             _context = context;
@@ -46,7 +45,9 @@ namespace MusicPlayer.Client.src.ViewModels
 
             InitializeViews();
             
-            _currentPage = _songsPage;
+            CurrentPage = _songsPage;
+            CurrentPlayingMusic = new MusicFile(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty,
+                string.Empty, 0.0f, null);
         }
 
         [RelayCommand]
@@ -56,6 +57,7 @@ namespace MusicPlayer.Client.src.ViewModels
             {
                 List<MusicFile> musicFiles = await _fileManipulator.GetSoundFilesAsync(_context);
                 List<MusicFile> sortedList = musicFiles.OrderBy(file => file.Title).ToList();
+
                 (_songsPage.BindingContext as SongsViewModel).FoundSongs = new ObservableCollection<MusicFile>(sortedList);
             }
         }

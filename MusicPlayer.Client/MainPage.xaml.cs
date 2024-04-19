@@ -26,7 +26,7 @@ namespace MusicPlayer.Client
             if ((MainPageViewModel)BindingContext != null)
             {
                 await (BindingContext as MainPageViewModel).LoadFiles();
-            }           
+            }
         }
     }
 }

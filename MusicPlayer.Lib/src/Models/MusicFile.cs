@@ -8,15 +8,17 @@ namespace MusicPlayer.Lib.src.Models
 {
     public class MusicFile
     {
-        public string Name { get; set; }
-        public string Title { get; set; }
-        public string Artist { get; set; }
-        public string Album { get; set; }
-        public string Genre { get; set; }
-        public string FilePath { get; set; }
-        public double DurationInMilliseconds { get; set; }
-                        
-        public MusicFile(string name, string title, string artist, string album, string genre, string filePath, double durationInMilliseconds)
+        public string Name { get; private set; }
+        public string Title { get; private set; }
+        public string Artist { get; private set; }
+        public string Album { get; private set; }
+        public string Genre { get; private set; }
+        public string FilePath { get; private set; }
+        public double DurationInMilliseconds { get; private set; }
+        public ImageSource AlbumArt { get; private set; }
+
+        public MusicFile(string name, string title, string artist, string album, string genre,
+            string filePath, double durationInMilliseconds, ImageSource albumArt)
         {
             Name = name;
             Title = title;
@@ -25,6 +27,7 @@ namespace MusicPlayer.Lib.src.Models
             Genre = genre;
             FilePath = filePath;
             DurationInMilliseconds = durationInMilliseconds;
+            AlbumArt = albumArt;
         }
     }
 }

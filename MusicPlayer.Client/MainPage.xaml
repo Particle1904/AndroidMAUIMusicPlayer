@@ -62,13 +62,26 @@
 
         <Grid Grid.Row="3" 
               ColumnDefinitions="Auto, *, Auto, Auto"
-              ColumnSpacing="10">
-            <Button Grid.Column="0" 
-                    BackgroundColor="Green"/>
-            <VerticalStackLayout Grid.Column="1">
-                <Label Text="{Binding CurrentPlayingSong}" 
+              ColumnSpacing="10"
+              Padding="10">
+            <Image Grid.Column="0" 
+                   HeightRequest="50"
+                   WidthRequest="50">
+                <Image.Style>
+                    <Style TargetType="Image">
+                        <Setter Property="Source" Value="{Binding CurrentPlayingMusic.AlbumArt}"/>
+                        <Style.Triggers>
+                            <DataTrigger TargetType="Image" Binding="{Binding CurrentPlayingMusic.AlbumArt}" Value="{Binding Source='', Mode=OneWay}">
+                                <Setter Property="Source" Value="music_note.png"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                <Label Text="{Binding CurrentPlayingMusic.Title}" 
                        FontSize="14"/>
-                <Label Text="{Binding CurrentPlayingAuthor}" 
+                <Label Text="{Binding CurrentPlayingMusic.Artist}" 
                        FontSize="10"/>
             </VerticalStackLayout>
             <ImageButton Grid.Column="2"
