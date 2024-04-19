@@ -59,11 +59,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiImage Remove="Resources\Images\music_note.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Remove="Resources\Images\more_vertical.png" />
 	  <None Remove="Resources\Images\music_note.png" />
 	  <None Remove="Resources\Images\options.png" />
 	  <None Remove="Resources\Images\search.png" />
 	  <None Remove="Resources\Images\shuffle.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Resources\Images\music_note.png" />
 	</ItemGroup>
 
 	<ItemGroup>

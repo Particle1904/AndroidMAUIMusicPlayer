@@ -2,7 +2,12 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MusicPlayer.Client.src.Views.SongsPage"
-             xmlns:mfc="clr-namespace:MusicPlayer.Client.src.Views">
+             xmlns:mfc="clr-namespace:MusicPlayer.Client.src.Views"
+             xmlns:converters="clr-namespace:MusicPlayer.Client.src.Converter">
+    <ContentView.Resources>
+        <converters:ImageSourceConverter x:Key="ImageConverter"/>
+    </ContentView.Resources>
+    
     <Grid RowDefinitions="auto, auto, *">
         <Label Grid.Row="0"
                Text="{Binding TotalSongs}"
@@ -31,30 +36,35 @@
                   SelectionMode="Single"
                   ItemSelected="ItemSelected"
                   SeparatorVisibility="None"
-                  RowHeight="60">
+                  RowHeight="65">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
                         <Grid ColumnDefinitions="1*, 8*, 1*"
                               VerticalOptions="CenterAndExpand" 
-                              Padding="10">
-                            <Image Grid.Column="0"
-                                   HorizontalOptions="StartAndExpand"
-                                   VerticalOptions="StartAndExpand">
-                                <Image.Style>
-                                    <Style TargetType="Image">
-                                        <Setter Property="Source" Value="{Binding AlbumArt}"/>
-                                        <Style.Triggers>
-                                            <DataTrigger TargetType="Image" Binding="{Binding AlbumArt}" Value="{x:Null}">
-                                                <Setter Property="Source" Value="music_note.png"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Image.Style>
-                            </Image>
+                              Padding="12"
+                              ColumnSpacing="10">
+                            <Border Grid.Column="0"
+                                    WidthRequest="50"
+                                    HeightRequest="50"
+                                    VerticalOptions="Center"
+                                    HorizontalOptions="Center"
+                                    StrokeShape="RoundRectangle 10"
+                                    StrokeThickness="3"
+                                    Stroke="Transparent"
+                                    BackgroundColor="#4D000000">
+                                <Image Aspect="AspectFill"
+                                       WidthRequest="50"
+                                       HeightRequest="50"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="Center"
+                                       Source="{Binding AlbumArt, Converter={StaticResource ImageConverter}}">
+                                </Image>
+                            </Border>
                             <VerticalStackLayout Grid.Column="1"
                                                  VerticalOptions="CenterAndExpand"
-                                                 HorizontalOptions="StartAndExpand">
+                                                 HorizontalOptions="StartAndExpand"
+                                                 Margin="10,0,0,0">
                                 <Label Text="{Binding Title}"
                                            TextColor="White"
                                            FontSize="16"

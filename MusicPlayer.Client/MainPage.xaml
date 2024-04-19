@@ -1,9 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MusicPlayer.Client.MainPage">
+             x:Class="MusicPlayer.Client.MainPage"
+             xmlns:converters="clr-namespace:MusicPlayer.Client.src.Converter">
+    <ContentPage.Resources>
+        <converters:ImageSourceConverter x:Key="ImageConverter"/>
+    </ContentPage.Resources>
+    
     <Grid RowDefinitions="Auto, Auto, *, Auto"
-          RowSpacing="10">
+          RowSpacing="0">
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0,1">
+                <GradientStop Color="#008080"
+                              Offset="0.1"/>
+                <GradientStop Color="#20B2AA"
+                              Offset="1.0"/>
+            </LinearGradientBrush>
+        </Grid.Background>
         <Grid Grid.Row="0" 
               ColumnDefinitions="Auto, *, Auto"
               ColumnSpacing="10">
@@ -57,36 +70,48 @@
         <Grid Grid.Row="2">
             <ContentView VerticalOptions="StartAndExpand"
                          HorizontalOptions="FillAndExpand"
-                         Content="{Binding CurrentPage}"/>
+                         Content="{Binding CurrentPage}"
+                         BackgroundColor="#4D000000"
+                         Padding="0,10,0,10"
+                         Margin="0,0,0,-20"/>
         </Grid>
 
-        <Grid Grid.Row="3" 
-              ColumnDefinitions="Auto, *, Auto, Auto"
-              ColumnSpacing="10"
-              Padding="10">
-            <Image Grid.Column="0" 
-                   HeightRequest="50"
-                   WidthRequest="50">
-                <Image.Style>
-                    <Style TargetType="Image">
-                        <Setter Property="Source" Value="{Binding CurrentPlayingMusic.AlbumArt}"/>
-                        <Style.Triggers>
-                            <DataTrigger TargetType="Image" Binding="{Binding CurrentPlayingMusic.AlbumArt}" Value="{Binding Source='', Mode=OneWay}">
-                                <Setter Property="Source" Value="music_note.png"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Image.Style>
-            </Image>
-            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
-                <Label Text="{Binding CurrentPlayingMusic.Title}" 
-                       FontSize="14"/>
-                <Label Text="{Binding CurrentPlayingMusic.Artist}" 
-                       FontSize="10"/>
-            </VerticalStackLayout>
-            <ImageButton Grid.Column="2"
-                         Command="{Binding PlayButtonCommand}"
-                         Source="video_play_pause.png"/>
-        </Grid>
+        <Border Grid.Row="3"
+                StrokeShape="RoundRectangle 30,30,0,0"
+                StrokeThickness="0"
+                Stroke="Transparent"
+                Margin="-1">
+            <Grid ColumnDefinitions="Auto, *, Auto, Auto"
+                  ColumnSpacing="10"
+                  Padding="8"
+                  Background="DarkSlateGray">
+                <Border Grid.Column="0"
+                        WidthRequest="80"
+                        HeightRequest="80"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        StrokeShape="RoundRectangle 30"
+                        StrokeThickness="3"
+                        Stroke="Transparent"
+                        BackgroundColor="#4D000000">
+                    <Image Aspect="AspectFill"
+                           WidthRequest="80"
+                           HeightRequest="80"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                           Source="{Binding CurrentPlayingMusic.AlbumArt, Converter={StaticResource ImageConverter}}">
+                    </Image>
+                </Border>
+                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                    <Label Text="{Binding CurrentPlayingMusic.Title}" 
+                           FontSize="18"/>
+                    <Label Text="{Binding CurrentPlayingMusic.Artist}" 
+                           FontSize="12"/>
+                </VerticalStackLayout>
+                <ImageButton Grid.Column="2"
+                             Command="{Binding PlayButtonCommand}"
+                             Source="video_play_pause.png"/>
+            </Grid>
+        </Border>
     </Grid>
 </ContentPage>
