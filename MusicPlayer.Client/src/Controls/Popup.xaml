@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MusicPlayer.Client.src.Controls.Popup"
+             Background="#aa000000">
+    <Grid>
+        <Border VerticalOptions="End"
+                Background="White"
+                StrokeShape="{RoundRectangle CornerRadius=20}"
+                Margin="30"
+                Padding="30">
+            <Label Text="This is a popup!"/>
+        </Border>
+    </Grid>
+</ContentPage>

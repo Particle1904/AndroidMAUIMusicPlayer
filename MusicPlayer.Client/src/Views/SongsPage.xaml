@@ -7,7 +7,7 @@
     <ContentView.Resources>
         <converters:ImageSourceConverter x:Key="ImageConverter"/>
     </ContentView.Resources>
-    
+
     <Grid RowDefinitions="auto, auto, *">
         <Label Grid.Row="0"
                Text="{Binding TotalSongs}"
@@ -30,66 +30,65 @@
                     TextColor="White"
                     Command="{Binding PlayFirstCommand}"/>
         </Grid>
-        <ListView Grid.Row="2"
-                  x:Name="SongList"
-                  ItemsSource="{Binding FoundSongs}"
-                  SelectionMode="Single"
-                  ItemSelected="ItemSelected"
-                  SeparatorVisibility="None"
-                  RowHeight="65">
-            <ListView.ItemTemplate>
+        <CollectionView Grid.Row="2"
+                        x:Name="SongList"
+                        ItemsSource="{Binding FoundSongs}"
+                        SelectionMode="Single"
+                        ItemSizingStrategy="MeasureAllItems"
+                        HorizontalOptions="StartAndExpand"
+                        SelectionChanged="ItemSelected">
+            <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <ViewCell>
-                        <Grid ColumnDefinitions="1*, 8*, 1*"
-                              VerticalOptions="CenterAndExpand" 
-                              Padding="12"
-                              ColumnSpacing="10">
-                            <Border Grid.Column="0"
-                                    WidthRequest="50"
-                                    HeightRequest="50"
-                                    VerticalOptions="Center"
-                                    HorizontalOptions="Center"
-                                    StrokeShape="RoundRectangle 10"
-                                    StrokeThickness="3"
-                                    Stroke="Transparent"
-                                    BackgroundColor="#4D000000">
-                                <Image Aspect="AspectFill"
-                                       WidthRequest="50"
-                                       HeightRequest="50"
-                                       VerticalOptions="Center"
-                                       HorizontalOptions="Center"
-                                       Source="{Binding AlbumArt, Converter={StaticResource ImageConverter}}">
-                                </Image>
-                            </Border>
-                            <VerticalStackLayout Grid.Column="1"
-                                                 VerticalOptions="CenterAndExpand"
-                                                 HorizontalOptions="StartAndExpand"
-                                                 Margin="10,0,0,0">
-                                <Label Text="{Binding Title}"
-                                           TextColor="White"
-                                           FontSize="16"
-                                           LineBreakMode="TailTruncation"
-                                           VerticalOptions="Start"
-                                           HorizontalOptions="StartAndExpand"
-                                           InputTransparent="True"/>
-                                <Label Text="{Binding Album}"
-                                           TextColor="LightGray"
-                                           FontSize="10"
-                                           LineBreakMode="TailTruncation"
-                                           VerticalOptions="Start"
-                                           HorizontalOptions="StartAndExpand"
-                                           InputTransparent="True"/>
-                            </VerticalStackLayout>
-                            <ImageButton Grid.Column="2"
-                                         Source="more_vertical.png"
-                                         VerticalOptions="CenterAndExpand"
-                                         HeightRequest="30"
-                                         Padding="0"
-                                         Margin="0"/>
-                        </Grid>
-                    </ViewCell>
+                    <Grid ColumnDefinitions="1*, 8*, 1*"
+                          VerticalOptions="FillAndExpand" 
+                          HorizontalOptions="FillAndExpand"
+                          Padding="12"
+                          ColumnSpacing="10">
+                        <Border Grid.Column="0"
+                                WidthRequest="50"
+                                HeightRequest="50"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                StrokeShape="RoundRectangle 10"
+                                StrokeThickness="3"
+                                Stroke="Transparent"
+                                BackgroundColor="#4D000000">
+                            <Image Aspect="AspectFill"
+                                   WidthRequest="50"
+                                   HeightRequest="50"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"
+                                   Source="{Binding AlbumArt, Converter={StaticResource ImageConverter}}">
+                            </Image>
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1"
+                                             VerticalOptions="CenterAndExpand"
+                                             HorizontalOptions="StartAndExpand"
+                                             Margin="10,0,0,0">
+                            <Label Text="{Binding Title}"
+                                   TextColor="White"
+                                   FontSize="16"
+                                   LineBreakMode="TailTruncation"
+                                   VerticalOptions="Start"
+                                   HorizontalOptions="StartAndExpand"
+                                   InputTransparent="True"/>
+                            <Label Text="{Binding Album}"
+                                   TextColor="LightGray"
+                                   FontSize="10"
+                                   LineBreakMode="TailTruncation"
+                                   VerticalOptions="Start"
+                                   HorizontalOptions="StartAndExpand"
+                                   InputTransparent="True"/>
+                        </VerticalStackLayout>
+                        <ImageButton Grid.Column="2"
+                                     Source="more_vertical.png"
+                                     VerticalOptions="CenterAndExpand"
+                                     HeightRequest="30"
+                                     Padding="0"
+                                     Margin="0"/>
+                    </Grid>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
     </Grid>
 </ContentView>

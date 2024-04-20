@@ -6,7 +6,7 @@
     <ContentPage.Resources>
         <converters:ImageSourceConverter x:Key="ImageConverter"/>
     </ContentPage.Resources>
-    
+
     <Grid RowDefinitions="Auto, Auto, *, Auto"
           RowSpacing="0">
         <Grid.Background>
@@ -94,13 +94,13 @@
                         StrokeThickness="3"
                         Stroke="Transparent"
                         BackgroundColor="#4D000000">
-                    <Image Aspect="AspectFill"
-                           WidthRequest="80"
-                           HeightRequest="80"
-                           VerticalOptions="Center"
-                           HorizontalOptions="Center"
-                           Source="{Binding CurrentPlayingMusic.AlbumArt, Converter={StaticResource ImageConverter}}">
-                    </Image>
+                    <ImageButton Aspect="AspectFill"
+                                 WidthRequest="80"
+                                 HeightRequest="80"
+                                 VerticalOptions="Center"
+                                 HorizontalOptions="Center"
+                                 Source="{Binding CurrentPlayingMusic.AlbumArt, Converter={StaticResource ImageConverter}}">
+                    </ImageButton>
                 </Border>
                 <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
                     <Label Text="{Binding CurrentPlayingMusic.Title}" 

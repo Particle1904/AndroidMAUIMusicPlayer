@@ -11,11 +11,12 @@ public partial class SongsPage : ContentView
 		InitializeComponent();
 	}
 
-    private void ItemSelected(object sender, SelectedItemChangedEventArgs e)
+    private void ItemSelected(object sender, SelectionChangedEventArgs e)
     {
         SongsViewModel viewModel = (BindingContext as SongsViewModel);
-        viewModel.PlaySoundAsyncCommand.Execute(e.SelectedItem);
-        viewModel.CurrentlyPlayingIndex = e.SelectedItemIndex;
+        MusicFile song = e.CurrentSelection.FirstOrDefault() as MusicFile;
+        viewModel.PlaySoundAsyncCommand.Execute(song);
+        viewModel.CurrentlyPlayingIndex = viewModel.FoundSongs.IndexOf(song);
 		SongList.SelectedItem = null;
     }
 }
